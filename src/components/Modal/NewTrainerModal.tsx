@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Dialog from '@radix-ui/react-dialog';
 import { XCircle } from 'phosphor-react';
-import { NewPokemon } from './NewPokemonModal';
+import { LinkPokemonToTrainer, NewPokemon } from './LinkPokemonToTrainerModal';
 import { PokemonAcademyContext, TrainerType } from '../../context/PokemonAcademyContext'
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -68,7 +68,7 @@ export function NewTrainerModal() {
                             <Dialog.Trigger className="mt-4 text-gray-100 bg-green-800 rounded-lg p-2">
                                 Vincular Pokemons
                             </Dialog.Trigger>
-                            <NewPokemon />
+                            <LinkPokemonToTrainer />
                         </Dialog.Root>
                     </div>
                 </form>
