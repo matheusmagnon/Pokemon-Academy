@@ -1,8 +1,31 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Dialog from '@radix-ui/react-dialog';
 import { XCircle } from 'phosphor-react';
-import { NewPokemon } from './NewPokemon';
+import { NewPokemon } from './NewPokemonModal';
+import { PokemonAcademyContext, TrainerType } from '../../context/PokemonAcademyContext'
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from "yup";
+import { useContext } from 'react';
+
+
+// const newTrainerFormSchema = {
+//     name: yup.string(),
+//     age: yup.number(),
+//     citeOfBirth: yup.string(),
+// }
 
 export function NewTrainerModal() {
+    const { createTrainer } = useContext(PokemonAcademyContext)
+
+    const { register, handleSubmit, reset } = useForm<TrainerType>()
+
+    function handleCreateNewTrainer(data: TrainerType) {
+        createTrainer(data)
+        reset()
+    }
+
+
     return (
         <Dialog.Portal className="align-middle">
             <Dialog.Overlay className="fixed inset-0 bg-black/40" />
@@ -13,25 +36,25 @@ export function NewTrainerModal() {
                         <XCircle size={28} className='text-gray-100' />
                     </Dialog.Close>
                 </div>
-                <form className='flex flex-col'>
+                <form onSubmit={handleSubmit(handleCreateNewTrainer)} className='flex flex-col'>
                     <div className=' flex flex-col space-y-2 '>
                         <input className='text-gray-300 bg-gray-700 p-1 rounded-md'
                             type="text"
                             placeholder="Nome"
                             required
-                        // {...register('description')}
+                            {...register('name')}
                         />
                         <input className='text-gray-300 bg-gray-700 p-1 rounded-md'
                             type="number"
                             placeholder="Idade"
                             required
-                        // {...register('price', { valueAsNumber: true })}
+                            {...register('age', { valueAsNumber: true })}
                         />
                         <input className='text-gray-300 bg-gray-700 p-1 rounded-md'
                             type="text"
                             placeholder="Cidade Natal"
                             required
-                        // {...register('category')}
+                            {...register('cityOfBirth')}
                         />
                     </div>
 
@@ -42,14 +65,11 @@ export function NewTrainerModal() {
                         </button>
 
                         <Dialog.Root>
-                            <Dialog.Trigger >
-                                <button className='mt-4 text-gray-100 bg-green-800 rounded-lg p-2'>
-                                    Vincular Pokemons
-                                </button>
+                            <Dialog.Trigger className="mt-4 text-gray-100 bg-green-800 rounded-lg p-2">
+                                Vincular Pokemons
                             </Dialog.Trigger>
                             <NewPokemon />
                         </Dialog.Root>
-
                     </div>
                 </form>
             </Dialog.Content>
