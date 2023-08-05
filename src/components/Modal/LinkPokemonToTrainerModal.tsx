@@ -54,17 +54,18 @@ export function LinkPokemonToTrainer() {
                                 return (
                                     <li key={pokemon.id} className='flex'>
                                         <input className="hidden peer"
-
                                             type="checkbox" id={pokemon.id?.toString()}
                                             value={JSON.stringify(pokemon)}
                                             checked={pokemon.isChecked || undefined}
-                                            // onClick={() => fetchPokemons(currentPage)}
-                                            onChange={(e) => {
-                                                handlePokemonToTrainer(e);
-                                            }} />
-                                        <label htmlFor={pokemon.id?.toString()} className=" w-56 flex justify-center p-2 border-2 rounded-lg cursor-pointer
+                                            onClick={(e) => handlePokemonToTrainer(e)}
+
+                                        //onChange={(e) => {
+                                        //  handlePokemonToTrainer(e);
+                                        //    }} 
+                                        />
+                                        <label htmlFor={pokemon.id?.toString()} className="disabled:cursor-not-allowed w-56 flex justify-center p-2 border-2 rounded-lg  
                                          hover:text-gray-300 border-gray-700 peer-checked:border-green-900 peer-checked:bg-teal-950 
-                                         peer-checked:text-gray-300  text-gray-400 bg-gray-800 hover:bg-gray-700">
+                                         peer-checked:text-gray-300  text-gray-400 bg-gray-800 hover:bg-gray-700 disabled:opacity-40 ">
                                             <div className="flex flex-col w-full">
                                                 <div className='flex  bg-gray-50 border-red-500 justify-center rounded-lg w-full'>
                                                     <img src={pokemon.cover} className='bg-slate-50 w-16' />

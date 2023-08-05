@@ -340,7 +340,7 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
     const [cPage, setCPage] = useState(1)
     const [totalPages, setTotalPages] = useState(0)
     const [state, setState] = useState(0)
-    const [pokemonIsChecked, setPokemonIsChecked] = useState<boolean>()
+    //const [pokemonIsChecked, setPokemonIsChecked] = useState<boolean>()
     const fetchPokemons = async (currentPage: number) => {
         const limitPerPage = 6
 
@@ -354,13 +354,9 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
         // offset + 1 / limitPerPage = current page
         // console.log("offset", offset);
 
-
         const data = ((await api.get(`?limit=${limitPerPage}&offset=${offset}`)).data);
         const totalRegisters = data.count
         setTotalPages(Math.ceil(totalRegisters / limitPerPage))
-
-
-
 
         // const nextPage = data.next
 
@@ -377,19 +373,20 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
 
         // function createPokemonObject(results) {
 
-        const promises = [];
+        const promises: any[] = [];
         data.results.forEach(async (pokemon) => {
             promises.push(fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`).then((res) => res.json()));
         })
-        Promise.all(promises).then((results) => {
-            const newPokemons = results?.map((result) => (
+
+        Promise.all(promises).then((pokemonsOfAPI) => {
+            const newPokemons = pokemonsOfAPI?.map((pokemonOfAPI) => (
                 {
-                    name: result.name,
-                    cover: result.sprites['front_default'],
-                    types: result.types.map((type) => type.type.name),
-                    id: result.id,
-                    ability: result.abilities.map((ability) => ability.ability.name),
-                    isChecked: pokemonsOfTrainer?.some((value) => { return (value.name == result.name) })
+                    name: pokemonOfAPI.name,
+                    cover: pokemonOfAPI.sprites['front_default'],
+                    types: pokemonOfAPI.types.map((type: { type: { name: string; }; }) => type.type.name),
+                    id: pokemonOfAPI.id,
+                    ability: pokemonOfAPI.abilities.map((ability: { ability: { name: string; }; }) => ability.ability.name),
+                    isChecked: pokemonsOfTrainer?.some((pokemonOfTrainer) => { return (pokemonOfTrainer.name == pokemonOfAPI.name) })
                 }
             ));
             setCurrentPokemons(newPokemons)
@@ -398,7 +395,6 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
 
     useEffect(() => {
         fetchPokemons(cPage)
-
     }, [cPage, currentPage, state]);
 
     // console.log(currentPokemons);
@@ -429,114 +425,45 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
     }
 
     function addPokemonToTrainer(pokemon: PokemonType) {
-
-        // Entrada de dados em caso de que o Treinador Pokemon não tenha pokemons 
-        if (pokemonsOfTrainer?.length == 0) {
-            setPokemonsOfTrainer([...pokemonsOfTrainer, pokemon])
-            console.log(pokemon.name, 'inedito');
+        const newPokemon: PokemonType = {
+            ability: pokemon.ability,
+            cover: pokemon.cover,
+            id: pokemon.id,
+            name: pokemon.name,
+            types: pokemon.types,
+            isChecked: true
         }
 
-        if (pokemonsOfTrainer?.length > 0) {
-            setPokemonsOfTrainer([...pokemonsOfTrainer, pokemon])
-            // const newPokemon = pokemonsOfTrainer?.map((pokemonOfTrainer) => {
-            // if (pokemonOfTrainer.id != pokemon.id) {
-            //     console.log('existente',pokemonOfTrainer.id, 'novo'pokemon.id);
-            //     setPokemonsOfTrainer([...pokemonsOfTrainer, pokemon])
-            //     // return {
-            //     //     ...pokemonOfTrainer, name: pokemonOfTrainer.name, ability: pokemonOfTrainer.ability,
-            //     //     cover: pokemonOfTrainer.cover, id: pokemonOfTrainer.id, isChecked: pokemonOfTrainer.isChecked,
-            //     //     types: pokemonOfTrainer.types
-            //     // }
-            // }
-            // setPokemonsOfTrainer([newPokemon[0] as PokemonType])
+        if (pokemonsOfTrainer.length < 6) {
+            console.log("tt");
 
-            // const newPokemon = pokemonsOfTrainer?.map((pokemonOfTrainer) => {
-            //     if (pokemon.id !== pokemonOfTrainer.id) {
-            //         console.log('novo diff');
-            //         return {
-            //             ...pokemonOfTrainer, name: pokemonOfTrainer.name, ability: pokemonOfTrainer.ability,
-            //             cover: pokemonOfTrainer.cover, id: pokemonOfTrainer.id, isChecked: pokemonOfTrainer.isChecked,
-            //             types: pokemonOfTrainer.types
-            //         }
+            if (pokemonsOfTrainer?.length == 0) {
+                setPokemonsOfTrainer([...pokemonsOfTrainer, newPokemon])
+                console.log(newPokemon.name, 'inedito');
+            }
 
-            //     }
-            // });
-
-            // console.log("novo pokemon ", );
-
-            // console.log('iguais ?');
-            // console.log(pokemonsOfTrainer?.some((pokemon) => {
-            //     console.log(pokemon.name[index], pokemonOfTrainer.name);
-
-            //     return (pokemon.name == pokemonOfTrainer.name)
-            // }));
-
-            // })
+            //Se já existir valor percorre o array para verificar se o valor ja existe
+            if (pokemonsOfTrainer?.length > 0) {
+                if (!pokemonsOfTrainer.map(pokemonOftrainer => pokemonOftrainer.id).includes(newPokemon.id)) {
+                    setPokemonsOfTrainer([...pokemonsOfTrainer, newPokemon]);
+                    //state.list.push(action.payload)
+                }
+                else {
+                    setPokemonsOfTrainer(
+                        pokemonsOfTrainer.filter(
+                            (pokemonOftrainer) => pokemonOftrainer.id !== newPokemon.id,
+                        ),
+                    );
+                }
+            }
+        } else {
+            //alert("Você já tem 6 pokemons")
+            setPokemonsOfTrainer(
+                pokemonsOfTrainer.filter(
+                    (pokemonOftrainer) => pokemonOftrainer.id !== newPokemon.id,
+                ),
+            );
         }
-
-        // if (pokemonOfTrainer.id !== pokemon.id) {
-        //     console.log('treinador', pokemonOfTrainer.id, pokemonOfTrainer.name, 'new pokemon', pokemon.id, pokemon.name);
-        //     setPokemonsOfTrainer([...pokemonsOfTrainer, pokemon])
-
-        //     // setPokemonsOfTrainer((state) => [pokemon, ...state])
-        // }
-
-        // )
-        //    pokemon.id != pokemonsOfTrainer[]
-
-
-
-
-        // Caso já o Treinador Pokemon já tenha pokemons
-        // if (pokemonsOfTrainer.length > 0) {
-        //     pokemonsOfTrainer.forEach((pokemonsOfTrainer) => {
-        //         console.log(pokemonsOfTrainer);
-        //     })
-        // const newPokemonOfTrainer = pokemonsOfTrainer.map((pokemonOfTrainer) => {
-        // Se o pokemon a ser cadastrado não tiver registro (novo registro)
-        // console.log(pokemonOfTrainer.name);
-        // if (pokemon.name == pokemonOfTrainer.name) {
-        //     console.log(pokemon.name, 'segundo registro e mesmo registro');
-        // }
-
-
-        // if (Number(pokemonOfTrainer.id) >= 0) {
-        //     console.log(pokemon, 'inedito');
-
-        //     return {
-        //         ...pokemonOfTrainer, name: pokemonOfTrainer.name, ability: pokemonOfTrainer.ability,
-        //         cover: pokemonOfTrainer.cover, id: pokemonOfTrainer.id, isChecked: pokemonOfTrainer.isChecked,
-        //         types: pokemonOfTrainer.types
-        //     }
-        //     // setPokemonsOfTrainer((state) => [pokemon, ...state])
-        // }
-
-        // else {
-        //     console.log('Não pode add o mesmo');
-        //     setPokemonsOfTrainer((state) => [pokemon, ...state])
-        // }
-
-        // })
-
-        // console.log(newPokemonOfTrainer?.[0], 'Objeto do novo pokemon');
-
-        // const newPokemonOfTrainerObj = newPokemonOfTrainer[0]
-        // if (newPokemonOfTrainerObj){
-
-        // }
-
-        // console.log(typeof newPokemonOfTrainerObj, 'newPokemo');
-        // console.log(typeof pokemon, 'atual');
-        // setPokemonsOfTrainer(newPokemonOfTrainer?.[0])
-
-
-
-        // }
-        // fetchPokemons(currentPage)
-
-        // setPokemonsOfTrainer((state) => [pokemon, ...state])
-        // setPokemonsOfTrainer((prevState) => ...newPokemons);
-        // (prevState: PokemonsType[]) => PokemonsType[]
     }
     useEffect(() => {
         console.log(pokemonsOfTrainer.length);
