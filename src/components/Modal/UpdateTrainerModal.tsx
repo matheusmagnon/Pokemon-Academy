@@ -69,7 +69,9 @@ export function UpdateTrainerModal({ trainerToUpdate }: UpdateTrainerProps) {
                         <ul className="grid w-full gap-2 md:grid-cols-3 ">
                             {trainerToUpdate.pokemons?.map((pokemon) => {
                                 return (
-                                    <PokemonCard ability={pokemon.ability}
+                                    <PokemonCard
+                                        key={pokemon.id}
+                                        ability={pokemon.ability}
                                         cover={pokemon.cover}
                                         name={pokemon.name}
                                         types={pokemon.types} />

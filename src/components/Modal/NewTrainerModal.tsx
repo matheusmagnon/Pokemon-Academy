@@ -24,8 +24,6 @@ export function NewTrainerModal() {
         createTrainer(data)
         reset()
     }
-
-
     return (
         <Dialog.Portal className="align-middle">
             <Dialog.Overlay className="fixed inset-0 bg-black/40" />

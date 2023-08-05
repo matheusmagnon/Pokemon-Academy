@@ -16,7 +16,7 @@ function App() {
 
   let viewTable
 
-  if (trainerToSearch.length > 0) {
+  if (trainerToSearch?.length > 0) {
     viewTable = trainerToSearch
   } else { viewTable = trainers }
 
@@ -26,7 +26,7 @@ function App() {
     searchTrainerByName(data)
 
   }
-  console.log(trainerToSearch);
+
   return (
     <div className="bg-gray-900 p-3 md:px-52 h-screen flex flex-col  font-dmSans text-gray-200 ">
       <header className="h-fit flex flex-row justify-between w-full">
@@ -68,7 +68,7 @@ function App() {
           </thead>
           <tbody>
 
-            {viewTable.map((trainer) => {
+            {viewTable?.map((trainer) => {
               return (
                 <tr key={trainer.id} className=" border-b bg-gray-800 border-gray-700 hover:bg-gray-600 cursor-pointer">
                   <th scope="row" className="px-6 py-2 font-medium  whitespace-nowrap text-white">
