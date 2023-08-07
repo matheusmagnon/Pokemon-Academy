@@ -1,5 +1,5 @@
 import { Dispatch, ReactNode, SetStateAction, createContext, useEffect, useState } from "react";
-import { v4 as uuidv4 } from 'uuid'
+
 import { api } from "../lib/axios";
 
 export interface PokemonType {
@@ -8,21 +8,21 @@ export interface PokemonType {
     types: string[];
     ability: string[];
     cover: string;
-    isChecked?: boolean;
+    isChecked?: false;
 }
 
 export interface TrainerType {
     id?: string;
-    name: string;
-    age: number;
-    cityOfBirth: string;
+    name?: string;
+    age?: number;
+    cityOfBirth?: string;
     pokemons?: PokemonType[]
 }
 
 interface PokemonAcademyContextType {
     trainers: TrainerType[];
     setTrainers: Dispatch<SetStateAction<TrainerType[]>>;
-    createTrainer: (data: TrainerType) => void
+    createNameTrainer: (name: TrainerType) => void
     deleteTrainer: (trainerToDelete: TrainerType) => void;
     searchTrainerByName: (data: TrainerType) => void;
     updateTrainer: (trainerToUpdate: TrainerType, data: TrainerType) => void;
@@ -40,9 +40,16 @@ interface PokemonAcademyContextType {
     setCurrentPokemons: Dispatch<SetStateAction<PokemonType[]>>;
     setState: Dispatch<SetStateAction<number>>;
     state: number;
-    fetchPokemons: (currentPage: number) => Promise<void>;
+    fetchPokemonsByPage: (currentPage: number) => Promise<void>;
     addPokemonToTrainer: (pokemon: PokemonType) => void;
-
+    currentTrainer: TrainerType;
+    createAgeTrainer: (age: TrainerType) => void
+    createCityOfBithTrainer: (city: TrainerType) => void
+    createTrainer: (currentTrainer: TrainerType) => void
+    deletePokemonOfTrainer: (pokemonOfTrainerToDelete: PokemonType) => void
+    setPokemonSearch: Dispatch<SetStateAction<string>>;
+    fetchPokemonByName: (name: string) => void
+    pokemonSearch: PokemonType;
 }
 
 interface PokemonAcademyProviderProps {
@@ -141,237 +148,22 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
         // },
     ])
     const [trainers, setTrainers] = useState<TrainerType[]>([
-        // {
-        //     id: uuidv4(),
-        //     age: 28,
-        //     cityOfBirth: 'Palmas',
-        //     name: 'Matheus Magno',
-        //     pokemons: [{
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass", "poison"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass", "poison"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass", "poison"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass", "poison"]
-        //     },]
-        // },
-        // {
-        //     id: uuidv4(),
-        //     age: 25,
-        //     cityOfBirth: 'Florianópolis',
-        //     name: 'Newton',
-        //     pokemons: [{
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass", "poison"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass", "poison"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass", "poison"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass", "poison"]
-        //     },]
-        // },
-        // {
-        //     id: uuidv4(),
-        //     age: 25,
-        //     cityOfBirth: 'São Luiz',
-        //     name: 'João Uzumaki',
-        //     pokemons: [{
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass", "poison"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass", "poison"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass", "poison"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass", "poison"]
-        //     },]
-        // },
-        // {
-        //     id: uuidv4(),
-        //     age: 18,
-        //     cityOfBirth: 'Rose',
-        //     name: 'Rock Lee',
-        //     pokemons: [{
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass", "poison"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass", "poison"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass", "poison"]
-        //     },
-        //     {
-        //         id: uuidv4(),
-        //         name: 'Bulbasauro',
-        //         ability: ["overgrow", "chlorophyll"],
-        //         cover: 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/001.png',
-        //         types: ["grass", "poison"]
-        //     },]
-        // },
+
     ])
+    const [currentTrainer, setCurrentTrainer] = useState<TrainerType>({})
     const [trainerToSearch, SetTrainerToSearch] = useState<TrainerType[]>([])
     const [offset, setOffset] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
     const [cPage, setCPage] = useState(1)
     const [totalPages, setTotalPages] = useState(0)
     const [state, setState] = useState(0)
-    //const [pokemonIsChecked, setPokemonIsChecked] = useState<boolean>()
-    const fetchPokemons = async (currentPage: number) => {
+    const [pokemonSearch, setPokemonSearch] = useState<PokemonType>()
+    const fetchPokemonsByPage = async (currentPage?: number) => {
         const limitPerPage = 6
-
         setOffset(currentPage * limitPerPage - limitPerPage)
-
-        // envia current page = 2 * limitPerPage = offset 
-
-        //ponto de partida da proxima paginaçao
-        //    const  offset = limitPerPage + 6
-
-        // offset + 1 / limitPerPage = current page
-        // console.log("offset", offset);
-
         const data = ((await api.get(`?limit=${limitPerPage}&offset=${offset}`)).data);
         const totalRegisters = data.count
         setTotalPages(Math.ceil(totalRegisters / limitPerPage))
-
-        // const nextPage = data.next
-
-        // console.log(nextPage);
-        // console.log(data);
-
-        // ?offset=12&limit=6
-
-        // console.log("total registros", totalRegisters);
-        // console.log("total pages", totalPages);
-        // console.log("registers per page", limitPerPage);
-        // console.log("current page", Math.ceil(offset + 1 / limitPerPage))
-
-
-        // function createPokemonObject(results) {
 
         const promises: any[] = [];
         data.results.forEach(async (pokemon) => {
@@ -393,37 +185,67 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
         });
     }
 
-    useEffect(() => {
-        fetchPokemons(cPage)
-    }, [cPage, currentPage, state]);
-
-    // console.log(currentPokemons);
-
-    // console.log(currentPage);
-
-    // console.log(currentPokemons);
-    // console.log(dataFetch);
-
-    // console.log(allDataPokemon);
+    const fetchPokemonByName = async (nameOfPokemon: string) => {
 
 
-    function createTrainer(data: TrainerType) {
-        const { age, cityOfBirth, name, pokemons } = data
-        if (pokemons) {
-
-            console.log("tem pokemons");
-        }
-        else {
-            const newTrainer: TrainerType = {
-                age,
-                cityOfBirth,
-                name,
-                id: uuidv4()
+        try {
+            const pokemonSearch = await (fetch(`https://pokeapi.co/api/v2/pokemon/${nameOfPokemon}`)
+                .then((res) => res.json()))
+            console.log(pokemonSearch);
+            const newPokemon =
+            {
+                name: pokemonSearch.name,
+                cover: pokemonSearch.sprites['front_default'],
+                types: pokemonSearch.types.map((type: { type: { name: string; }; }) => type.type.name),
+                id: pokemonSearch.id,
+                ability: pokemonSearch.abilities.map((ability: { ability: { name: string; }; }) => ability.ability.name),
+                isChecked: pokemonsOfTrainer?.some((pokemonOfTrainer) => { return (pokemonOfTrainer.name == pokemonSearch.name) })
             }
-            setTrainers((state) => [newTrainer, ...state])
+
+            setCurrentPokemons([newPokemon])
+            setPokemonSearch(newPokemon)
+
+        } catch (error) {
+            alert('Pokemon não existe!')
         }
     }
 
+    useEffect(() => {
+        fetchPokemonsByPage(cPage)
+    }, [cPage, currentPage]);
+
+    useEffect(() => {
+        if (currentPokemons.length > 1) {
+            fetchPokemonsByPage(currentPage)
+        }
+        if (currentPokemons.length == 1) {
+            fetchPokemonByName(pokemonSearch?.name)
+        }
+
+    }, [currentTrainer])
+
+
+    console.log(pokemonSearch);
+
+    function createTrainer(currentTrainer: TrainerType) {
+        setTrainers([...trainers, currentTrainer])
+        setPokemonsOfTrainer([])
+        setCurrentTrainer({})
+        fetchPokemonsByPage(currentPage)
+    }
+
+    function createNameTrainer(name: string) {
+        setCurrentTrainer({ ...currentTrainer, name: name });
+    }
+    function createAgeTrainer(age: number) {
+        setCurrentTrainer({ ...currentTrainer, age: age })
+    }
+
+    function createCityOfBithTrainer(city: string) {
+        setCurrentTrainer({ ...currentTrainer, cityOfBirth: city })
+    }
+
+    //checkbox não est
     function addPokemonToTrainer(pokemon: PokemonType) {
         const newPokemon: PokemonType = {
             ability: pokemon.ability,
@@ -431,22 +253,19 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
             id: pokemon.id,
             name: pokemon.name,
             types: pokemon.types,
-            isChecked: true
+            // isChecked: true
         }
 
         if (pokemonsOfTrainer.length < 6) {
-            console.log("tt");
-
             if (pokemonsOfTrainer?.length == 0) {
                 setPokemonsOfTrainer([...pokemonsOfTrainer, newPokemon])
-                console.log(newPokemon.name, 'inedito');
             }
 
             //Se já existir valor percorre o array para verificar se o valor ja existe
             if (pokemonsOfTrainer?.length > 0) {
                 if (!pokemonsOfTrainer.map(pokemonOftrainer => pokemonOftrainer.id).includes(newPokemon.id)) {
                     setPokemonsOfTrainer([...pokemonsOfTrainer, newPokemon]);
-                    //state.list.push(action.payload)
+                    setPokemonSearch(undefined)
                 }
                 else {
                     setPokemonsOfTrainer(
@@ -457,7 +276,10 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
                 }
             }
         } else {
-            //alert("Você já tem 6 pokemons")
+            if (!pokemonsOfTrainer.map(pokemonOftrainer => pokemonOftrainer.id).includes(newPokemon.id)) {
+                alert("Você não pode ter mais que tem 6 pokemons")
+            }
+
             setPokemonsOfTrainer(
                 pokemonsOfTrainer.filter(
                     (pokemonOftrainer) => pokemonOftrainer.id !== newPokemon.id,
@@ -466,9 +288,20 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
         }
     }
     useEffect(() => {
-        console.log(pokemonsOfTrainer.length);
-
+        setCurrentTrainer({
+            ...currentTrainer,
+            pokemons: pokemonsOfTrainer
+        })
     }, [pokemonsOfTrainer])
+
+
+    const deletePokemonOfTrainer = (pokemonsOfTrainerToDelete: PokemonType) => {
+
+        setTrainers(trainers.map((trainer) => {
+            return { ...trainer, pokemons: [...trainer.pokemons.filter((pokemon) => pokemon.name !== pokemonsOfTrainerToDelete.name)] }
+        }))
+    }
+
     const deleteTrainer = (trainerToDelete: TrainerType) => {
         setTrainers(
             trainers.filter(
@@ -510,11 +343,13 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
 
         setTrainers(newTrainers);
     }
-    console.log("pokemonTrainer", pokemonsOfTrainer);
+    console.log("currentTrainer", currentTrainer);
+    console.log("current Pokemons", pokemonsOfTrainer);
+
     return (
         <PokemonAcademyContext.Provider value={{
             addPokemonToTrainer,
-            fetchPokemons,
+            fetchPokemonsByPage,
             state,
             setState,
             setCurrentPokemons,
@@ -527,7 +362,11 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
             currentPokemons,
             updateTrainer,
             trainers, setTrainers, pokemonsOfTrainer,
-            createTrainer, deleteTrainer,
+            createAgeTrainer,
+            createTrainer,
+            deletePokemonOfTrainer,
+            createCityOfBithTrainer, currentTrainer, pokemonSearch,
+            createNameTrainer, deleteTrainer, fetchPokemonByName,
             searchTrainerByName, trainerToSearch
         }}>
             {children}

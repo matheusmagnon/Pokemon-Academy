@@ -6,7 +6,8 @@ import { PokemonAcademyContext, TrainerType } from '../../context/PokemonAcademy
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from "yup";
-import { useContext } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid'
 
 
 // const newTrainerFormSchema = {
@@ -16,13 +17,53 @@ import { useContext } from 'react';
 // }
 
 export function NewTrainerModal() {
-    const { createTrainer } = useContext(PokemonAcademyContext)
+    const { createNameTrainer, createAgeTrainer, createCityOfBithTrainer, currentTrainer, createTrainer, setCurrentPokemons } = useContext(PokemonAcademyContext)
+    const [isDisabled, setIsDisabled] = useState(true)
+    const refNameTrainer = useRef(null)
+    const refAgeTrainer = useRef(null)
+    const refCityOfBirthTrainer = useRef(null)
 
-    const { register, handleSubmit, reset } = useForm<TrainerType>()
 
-    function handleCreateNewTrainer(data: TrainerType) {
-        createTrainer(data)
-        reset()
+    useEffect(() => {
+        const fieldsIsEmpty = Object.values(currentTrainer).length < 4 ? true : false || Object.values(currentTrainer).includes("")
+
+        setIsDisabled(fieldsIsEmpty);
+    },
+        [currentTrainer]
+    )
+
+
+    function onSubmitForm(e) {
+
+        if (Object.values(currentTrainer).length < 4 ? true : false || Object.values(currentTrainer).includes("")) {
+            alert('Preencha todos os campos')
+
+        }
+        else {
+            createTrainer({
+                ...currentTrainer,
+                id: uuidv4()
+            })
+            refNameTrainer.current.value = ''
+            refAgeTrainer.current.value = ''
+            refCityOfBirthTrainer.current.value = ''
+
+        }
+
+    }
+
+    function handleNameOfTrainer(e) {
+        createNameTrainer(e.target.value)
+
+    }
+    function handleAgeOfTrainer(e) {
+        createAgeTrainer(e.target.value)
+
+        // console.log(e);
+    }
+    function handleCityOfBithTrainer(e) {
+        createCityOfBithTrainer(e.target.value)
+
     }
     return (
         <Dialog.Portal className="align-middle">
@@ -34,40 +75,49 @@ export function NewTrainerModal() {
                         <XCircle size={28} className='text-gray-100' />
                     </Dialog.Close>
                 </div>
-                <form onSubmit={handleSubmit(handleCreateNewTrainer)} className='flex flex-col'>
+                <form onSubmit={(onSubmitForm)} className='flex flex-col'>
                     <div className=' flex flex-col space-y-2 '>
                         <input className='text-gray-300 bg-gray-700 p-1 rounded-md'
+                            ref={refNameTrainer}
                             type="text"
                             placeholder="Nome"
                             required
-                            {...register('name')}
+                            defaultValue={''}
+                            onChange={(e) => { handleNameOfTrainer(e) }}
+                        // {...register('name')}
                         />
                         <input className='text-gray-300 bg-gray-700 p-1 rounded-md'
+                            ref={refAgeTrainer}
                             type="number"
                             placeholder="Idade"
                             required
-                            {...register('age', { valueAsNumber: true })}
+                            defaultValue={''}
+                            onChange={(e) => { handleAgeOfTrainer(e) }}
+
+                        // {...register('age', { valueAsNumber: true })}
                         />
                         <input className='text-gray-300 bg-gray-700 p-1 rounded-md'
+                            ref={refCityOfBirthTrainer}
                             type="text"
                             placeholder="Cidade Natal"
-                            required
-                            {...register('cityOfBirth')}
+                            required={true}
+                            defaultValue={''}
+                            onChange={(e) => { handleCityOfBithTrainer(e) }}
+                        // {...register('cityOfBirth')}
                         />
                     </div>
 
                     <div className=' flex justify-between'>
-                        <button type="submit" className='mt-4 text-gray-100 bg-green-800 rounded-lg w-24 p-2'>
-                            {/* disabled={isSubmitting} */}
-                            Cadastrar
-                        </button>
-
                         <Dialog.Root>
-                            <Dialog.Trigger className="mt-4 text-gray-100 bg-green-800 rounded-lg p-2">
+                            <Dialog.Trigger className="mt-4 text-gray-100 bg-yellow-700 rounded-lg p-2">
                                 Vincular Pokemons
                             </Dialog.Trigger>
                             <LinkPokemonToTrainer />
                         </Dialog.Root>
+                        <button type="button" onClick={(e) => onSubmitForm(e)} disabled={isDisabled} className='disabled:cursor-not-allowed disabled:opacity-60 mt-4 text-gray-100 bg-green-800 rounded-lg w-24 p-2'>
+                            {/* disabled={isSubmitting} */}
+                            Cadastrar
+                        </button>
                     </div>
                 </form>
             </Dialog.Content>
