@@ -9,17 +9,20 @@ import { PokemonCard } from '../PokemonsCard';
 
 import { v4 as uuidv4 } from 'uuid'
 
-export function ShowPokemonSearch(TrainerToUpdate: TrainerType) {
-    console.log(TrainerToUpdate);
+export function ShowPokemonSearch(trainerToUpdate: TrainerType) {
+    console.log(trainerToUpdate);
 
-    const { pokemonSearch, addPokemonToTrainer, updateTrainer } = useContext(PokemonAcademyContext)
+    const { pokemonSearch, initialSearchPokemon, setPokemonSearch, resetPokemonSearch, updateTrainer } = useContext(PokemonAcademyContext)
     const [isDisabled, setIsDisabled] = useState(true)
 
-    function handleUpdateTrainer(TrainerToUpdate: TrainerType) {
-        console.log("trainer", TrainerToUpdate);
-        // setTrainers
-
+    function handleUpdateTrainer(trainerToUpdate: TrainerType) {
+        // console.log("trainer", trainerToUpdate);
+        // console.log("pokemon pesquisa", pokemonSearch);
+        const newTrainer = { ...trainerToUpdate, pokemons: [...trainerToUpdate.pokemons, pokemonSearch] }
+        updateTrainer(trainerToUpdate, newTrainer)
     }
+
+    const handleResetPokemonSearch = () => resetPokemonSearch()
 
     return (
         <Dialog.Portal className="align-middle">
@@ -31,27 +34,30 @@ export function ShowPokemonSearch(TrainerToUpdate: TrainerType) {
                         <XCircle size={28} className='text-gray-100' />
                     </Dialog.Close>
                 </div>
-                <PokemonCard
-                    key={uuidv4()}
-                    ability={pokemonSearch.ability}
-                    cover={pokemonSearch.cover}
-                    name={pokemonSearch.name}
-                    types={pokemonSearch.types} />
+                <div className='flex justify-center'>
+                    <PokemonCard
+                        key={uuidv4()}
+                        ability={pokemonSearch?.ability}
+                        cover={pokemonSearch?.cover}
+                        name={pokemonSearch?.name}
+                        types={pokemonSearch?.types}
+                    />
+
+                </div>
 
                 <div className=' flex justify-between'>
                     <Dialog.Root>
-                        <button onClick={() => handleUpdateTrainer(TrainerToUpdate)}
+                        <button onClick={() => handleUpdateTrainer(trainerToUpdate)}
                             className="mt-4 text-gray-100 bg-yellow-700 rounded-lg p-2">
                             Vincular Pokemon
                         </button>
                         {/* <LinkPokemonToTrainer /> */}
                     </Dialog.Root>
-                    <button type="button" className='disabled:cursor-not-allowed disabled:opacity-60 mt-4 text-gray-100 bg-green-800 rounded-lg w-24 p-2'>
-                        {/* disabled={isSubmitting} */}
-                        Cadastrar
+                    <button type="button" onClick={() => handleResetPokemonSearch()} className='disabled:cursor-not-allowed disabled:opacity-60 mt-4 text-gray-100 bg-green-800 rounded-lg w-24 p-2'>
+                        Voltar
                     </button>
                 </div>
             </Dialog.Content>
-        </Dialog.Portal>
+        </Dialog.Portal >
     )
 }

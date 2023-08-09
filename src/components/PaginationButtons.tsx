@@ -22,7 +22,7 @@ export function PaginationButtons() {
     // console.log("current page", currentPage);
 
     return (
-        <div className="text-gray-300">
+        <div className="text-gray-300 text-xs md:text-base">
             <ReactPaginate
                 breakLabel={
                     <span className="mr-2">...</span>
@@ -33,7 +33,7 @@ export function PaginationButtons() {
                         <CaretRight size={22} />
                     </span>}
                 onPageChange={handlePageClick}
-                pageRangeDisplayed={3}
+                pageRangeDisplayed={1}
                 pageCount={totalPages}
                 previousLabel={
                     <span className="flex items-center 

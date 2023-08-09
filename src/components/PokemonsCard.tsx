@@ -4,8 +4,10 @@ import { PokemonAcademyContext, PokemonType } from "../context/PokemonAcademyCon
 import { v4 as uuidv4 } from 'uuid'
 import { useContext } from "react";
 
-export function PokemonCard(pokemon: PokemonType) {
+export function PokemonCard(pokemon: PokemonType, icon: string) {
     const { deletePokemonOfTrainer } = useContext(PokemonAcademyContext)
+    console.log(icon);
+    //add icon lixo
     return (
         <li
             key={uuidv4()}
@@ -14,16 +16,8 @@ export function PokemonCard(pokemon: PokemonType) {
                 key={uuidv4()}
                 type="checkbox"
                 id={pokemon.id?.toString()}
-                // defaultValue={JSON.stringify(pokemon) || undefined}
                 value={JSON.stringify(pokemon) || undefined}
                 checked={pokemon.isChecked || false}
-                // onClick={(e) => setTimeout(() => {
-                //     fetchPokemons(currentPage)
-                // }, 1000)}
-                // disabled={pokemon.isChecked}
-                onChange={(e) => {
-                    // handlePokemonToTrainer(e)
-                }}
             />
             <label htmlFor={pokemon.id?.toString()} className="w-56 flex justify-center p-2 cursor-pointer peer-disabled:cursor-not-allowed border-2 rounded-lg  
          hover:text-gray-300 border-gray-700 peer-checked:border-green-900 peer-checked:bg-teal-950 
@@ -44,7 +38,7 @@ export function PokemonCard(pokemon: PokemonType) {
                     </div>
                     <div className="flex flex-row items-end">
                         <div className="flex flex-row justify-start text-sm ">
-                            <div className="flex flex-wrap items-baseline">
+                            <div className="flex flex-wrap w-44 items-baseline">
                                 <span>Habilidades:</span>
                                 {pokemon.ability?.map((t) => {
                                     return (
@@ -57,7 +51,9 @@ export function PokemonCard(pokemon: PokemonType) {
                             </div>
 
                         </div>
-                        <Trash className="hover:text-red-800" size={32} onClick={() => deletePokemonOfTrainer(pokemon)} />
+                        <div>
+                            <Trash className="hover:text-red-800" size={32} onClick={() => deletePokemonOfTrainer(pokemon)} />
+                        </div>
                     </div>
                 </div>
             </label>
