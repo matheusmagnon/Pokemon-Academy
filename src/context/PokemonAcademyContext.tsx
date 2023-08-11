@@ -1,67 +1,9 @@
 /* eslint-disable react/react-in-jsx-scope */
-import { Dispatch, ReactNode, SetStateAction, createContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 
 import { api } from '../lib/axios';
+import { PokemonAcademyContextType, PokemonAcademyProviderProps, PokemonType, TrainerType } from '../types/types';
 
-export interface PokemonType {
-    id?: number;
-    name: string;
-    types: string[];
-    ability: string[];
-    cover: string;
-    isChecked?: boolean;
-}
-
-export interface TrainerType {
-    id?: string;
-    name?: string;
-    age?: number;
-    cityOfBirth?: string;
-    pokemons?: PokemonType[]
-}
-
-interface PokemonAcademyContextType {
-    trainers: TrainerType[];
-    setTrainers: Dispatch<SetStateAction<TrainerType[]>>;
-    createNameTrainer: (name: TrainerType) => void
-    deleteTrainer: (trainerToDelete: TrainerType) => void;
-    searchTrainerByName: (data: TrainerType) => void;
-    updateTrainer: (trainerToUpdate: TrainerType, data: TrainerType) => void;
-    trainerToSearch: TrainerType[];
-    pokemonsOfTrainer: PokemonType[];
-    // setPokemonsOfTrainer: Dispatch<SetStateAction<PokemonsType[]>>;
-    // Dispatch<SetStateAction<PokemonsType[]>>
-    currentPokemons: PokemonType[];
-    currentPage: number;
-    setCurrentPage: Dispatch<SetStateAction<number>>;
-    setOffset: Dispatch<SetStateAction<number>>;
-    cPage: number;
-    setCPage: Dispatch<SetStateAction<number>>;
-    totalPages: number;
-    setCurrentPokemons: Dispatch<SetStateAction<PokemonType[]>>;
-    setState: Dispatch<SetStateAction<number>>;
-    state: number;
-    fetchPokemonsByPage: (currentPage: number) => Promise<void>;
-    addPokemonToTrainerCurrentTrainer: (pokemon: PokemonType) => void;
-    currentTrainer: TrainerType;
-    createAgeTrainer: (age: TrainerType) => void
-    createCityOfBithTrainer: (city: TrainerType) => void
-    createTrainer: (currentTrainer: TrainerType) => void
-    deletePokemonOfTrainer: (pokemonOfTrainerToDelete: PokemonType) => void
-    setPokemonSearch: Dispatch<SetStateAction<string>>
-    fetchPokemonByName: (name: string) => void
-    pokemonSearch: PokemonType;
-    resetPokemonSearch: () => void
-    // isMobile: boolean;
-    resetSearchTrainer: () => void;
-    addPokemonToTrainer: (trainerToUpdate: TrainerType, pokemon: PokemonType) => void;
-    // viewTable: TrainerType[];
-
-}
-
-interface PokemonAcademyProviderProps {
-    children: ReactNode
-}
 
 export const PokemonAcademyContext = createContext({} as PokemonAcademyContextType);
 
@@ -75,25 +17,8 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
     const [currentPage, setCurrentPage] = useState(1);
     const [cPage, setCPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
-    const [state, setState] = useState(0);
-    const [pokemonSearch, setPokemonSearch] = useState<PokemonType>();
-    // const [isMobile, setIsMobile] = useState<boolean>(false);
-    // const [viewTable, setViewTable] = useState<TrainerType[]>()
-    const initialSearchPokemon = {
-        id: 0,
-        name: "",
-        types: [],
-        ability: [],
-        cover: '',
-        isChecked: false,
-    }
 
-    // useEffect(() => {
-    //     const resolution = window.innerWidth;
-    //     setIsMobile(resolution >= 290 && resolution <= 480)
-    // }, [])
-
-    const fetchPokemonsByPage = async (currentPage?: number) => {
+    const fetchPokemonsByPage = async (currentPage: number) => {
         const limitPerPage = 6;
         setOffset(currentPage * limitPerPage - limitPerPage);
         const data = ((await api.get(`?limit=${limitPerPage}&offset=${offset}`)).data);
@@ -101,7 +26,7 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
         setTotalPages(Math.ceil(totalRegisters / limitPerPage));
 
         const promises: any[] = [];
-        data.results.forEach(async (pokemon) => {
+        data.results.forEach(async (pokemon: PokemonType[]) => {
             promises.push(fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`).then((res) => res.json()));
         });
 
@@ -124,7 +49,6 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
         try {
             const pokemonSearch = await (fetch(`https://pokeapi.co/api/v2/pokemon/${nameOfPokemon}`)
                 .then((res) => res.json()));
-            console.log(pokemonSearch);
             const newPokemon =
             {
                 name: pokemonSearch.name,
@@ -136,7 +60,6 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
             };
 
             setCurrentPokemons([newPokemon]);
-            setPokemonSearch(newPokemon);
 
         } catch (error) {
             console.log(error);
@@ -238,41 +161,40 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
         };
 
         const newPokemonsOfTrainer = () => {
-            if (trainer.pokemons.length < 6) {
+            if (trainer?.pokemons?.length != undefined && trainer.pokemons.length < 6) {
 
                 if (trainer.pokemons?.length == 0) {
                     return [...trainer.pokemons, newPokemon]
                 }
 
                 //Se já existir valor percorre o array para verificar se o valor ja existe
-                if (trainer.pokemons?.length > 0) {
-                    if (!trainer.pokemons.map(pokemonOftrainer => pokemonOftrainer.id).includes(newPokemon.id)) {
+                if (trainer?.pokemons?.length != undefined && trainer.pokemons.length > 0) {
+                    if (!trainer?.pokemons?.map(pokemonOftrainer => pokemonOftrainer.id).includes(newPokemon.id)) {
                         return [...trainer.pokemons, newPokemon]
                         // setPokemonSearch(undefined);
                     }
                     else {
-                        return [trainer?.pokemons.filter(
+                        return [trainer.pokemons?.filter(
                             (pokemonOftrainer) => pokemonOftrainer.id !== newPokemon.id)]
 
                     }
                 }
             } else {
-                if (!trainer.pokemons.map(pokemonOftrainer => pokemonOftrainer.id).includes(newPokemon.id)) {
+                if (!trainer.pokemons?.map(pokemonOftrainer => pokemonOftrainer.id).includes(newPokemon.id)) {
                     alert('Você não pode ter mais que tem 6 pokemons');
                 }
 
                 return [
-                    trainer.pokemons.filter(
+                    trainer.pokemons?.filter(
                         (pokemonOftrainer) => pokemonOftrainer.id !== newPokemon.id,
                     ),
                 ]
             }
         }
-        const newPokemons = newPokemonsOfTrainer()
-        const newTrainer = { ...trainer, pokemons: newPokemons }
+        const newPokemons: PokemonType[] = newPokemonsOfTrainer()
+        const newTrainer: TrainerType = { ...trainer, pokemons: newPokemons }
         updateTrainer(trainer, newTrainer)
         fetchPokemonsByPage(1)
-
     }
 
     useEffect(() => {
@@ -285,7 +207,7 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
 
     const deletePokemonOfTrainer = (pokemonsOfTrainerToDelete: PokemonType) => {
         setTrainers(trainers.map((trainer) => {
-            return { ...trainer, pokemons: [...trainer.pokemons.filter((pokemon) => pokemon.name !== pokemonsOfTrainerToDelete.name)] };
+            return { ...trainer, pokemons: [...trainer?.pokemons?.filter((pokemon) => pokemon.name !== pokemonsOfTrainerToDelete.name)] };
         }));
     };
 
@@ -299,9 +221,15 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
 
     function searchTrainerByName(data: TrainerType) {
         const query = data.name;
-        setTrainerToSearch(
-            trainers.filter((data) => data.name === query)
-        );
+        if (trainers.some(trainer => trainer.name == data.name)) {
+            console.log(data.name);
+            setTrainerToSearch(
+                trainers.filter((data) => data.name === query)
+            );
+        }
+        else {
+            alert('Treinador não entontrado');
+        }
     }
 
     function resetSearchTrainer() {
@@ -314,14 +242,15 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
                 if (newData.name == '') {
                     newData.name = trainer.name;
                 }
-                if (isNaN(newData.age)) {
+                if (newData.age != undefined && isNaN(newData.age)) {
                     newData.age = trainer.age;
                 }
                 if (newData.cityOfBirth == '') {
                     newData.cityOfBirth = trainer.cityOfBirth;
                 }
-                if (newData.pokemons?.length > 0) {
-                    if (!trainerToUpdate.pokemons?.map(pokemonOftrainer => pokemonOftrainer.id).includes(currentPokemons[0].id)) {
+                if (newData.pokemons?.length != undefined && newData.pokemons?.length > 0) {
+                    if (!trainerToUpdate.pokemons?.map(pokemonOftrainer => pokemonOftrainer.id)
+                        .includes(currentPokemons[0].id)) {
                         return {
                             ...trainerToUpdate,
                             pokemons:
@@ -330,12 +259,10 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
                         };
                     }
                     alert("Já existe pokemon com esse cadastro!")
-                    // newData.pokemons = trainer.pokemons
                 }
                 return {
                     ...trainer, name: newData.name, age: newData?.age,
                     cityOfBirth: newData?.cityOfBirth
-                    // pokemons: newData?.pokemons
                 };
 
             }
@@ -343,24 +270,13 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
         });
 
         setTrainers(newTrainers);
-        resetPokemonSearch()
+
     };
-
-    const resetPokemonSearch = () => {
-        // console.log('reset');
-
-        setPokemonSearch(initialSearchPokemon)
-    }
-    console.log('currentTrainer', currentTrainer);
-    console.log('current Pokemons', pokemonsOfTrainer);
-
     return (
         <PokemonAcademyContext.Provider value={{
             addPokemonToTrainer,
             addPokemonToTrainerCurrentTrainer,
             fetchPokemonsByPage,
-            state,
-            setState,
             setCurrentPokemons,
             totalPages,
             cPage,
@@ -370,22 +286,19 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
             currentPage,
             currentPokemons,
             updateTrainer,
-            trainers, setTrainers, pokemonsOfTrainer,
+            trainers,
+            pokemonsOfTrainer,
             createAgeTrainer,
-            resetPokemonSearch,
             createTrainer,
-            setPokemonSearch,
             deletePokemonOfTrainer,
             createCityOfBithTrainer,
             currentTrainer,
-            pokemonSearch,
             createNameTrainer,
             deleteTrainer,
             fetchPokemonByName,
             searchTrainerByName,
             trainerToSearch,
             resetSearchTrainer,
-            // isMobile
         }}>
             {children}
         </PokemonAcademyContext.Provider>

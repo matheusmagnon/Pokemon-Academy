@@ -5,38 +5,41 @@ import { PokemonAcademyContext } from '../../context/PokemonAcademyContext';
 
 import { PaginationButtons } from '../PaginationButtons';
 
+import pokemonTitle from '../../assets/pokemonImageLinkTrainer.png'
+
 import { v4 as uuidv4 } from 'uuid'
+import { HTMLElementEvent } from '../../types/types';
 
 export function LinkPokemonToTrainer() {
     const { currentPokemons, fetchPokemonByName, addPokemonToTrainerCurrentTrainer, fetchPokemonsByPage, currentPage
     } = useContext(PokemonAcademyContext)
 
-    const refNamePokemon = useRef(null)
+    const refNamePokemon = useRef<HTMLInputElement | null>(null)
 
-    const handlePokemonToTrainer = (e: EventTarget & HTMLInputElement) => {
+    const handlePokemonToTrainer = (e: HTMLElementEvent<HTMLButtonElement>) => {
         const pokemonObject = JSON.parse(e.target._wrapperState.initialValue)
         addPokemonToTrainerCurrentTrainer(pokemonObject)
     }
 
-    interface handleSearchProps {
-        current: { value: string }
-    }
-    const handleSearch = (namePokemon: handleSearchProps) => {
-        const query = namePokemon?.current.value;
+    const handleSearch = (namePokemon: string) => {
+        const query = namePokemon
         fetchPokemonByName(query);
     }
     const handleResetFetch = () => {
         fetchPokemonsByPage(currentPage)
     }
     return (
-        // <Dialog.Root>
         <Dialog.Portal className="">
             <Dialog.Overlay className="fixed inset-0 bg-black/40  top-0 left-0 right-0 bottom-0 grid place-items-center overflow-y-auto" />
             <Dialog.Content className="fixed md:h-fit md:top-1/2   md:m-1 -translate-y-1/2 
             left-1/2 -translate-x-1/2 rounded-md bg-gray-900 p-4 shadow">
                 <div className='flex justify-between items-center pb-4'>
-                    <Dialog.Title className="font-bold text-xl text-gray-100">
-                        Pesquise o Pokemon que deseja vincular
+                    <Dialog.Title className=" flex items-end font-bold text-xl pb-1 text-gray-100">
+                        <img className="lg:h-10 h-10 pr-2"
+                            src={pokemonTitle}
+                            alt="Pokemon"
+                        ></img>
+                        Pokédex - Pesquise o Pokemon que deseja vincular
                     </Dialog.Title>
                     <Dialog.Close>
                         <XCircle size={28} className='text-gray-100' />
@@ -51,7 +54,7 @@ export function LinkPokemonToTrainer() {
                             required
                             defaultValue={''}
                         />
-                        <button type="button" onClick={() => handleSearch(refNamePokemon)}
+                        <button type="button" onClick={() => handleSearch(refNamePokemon && refNamePokemon?.current.value)}
                             className="flex items-center border-2 border-green-900 p-2 rounded-lg 
                             space-x-1  hover:bg-green-800 hover:text-gray-100 text-gray-200 duration-150">
                             <MagnifyingGlass size={20} />

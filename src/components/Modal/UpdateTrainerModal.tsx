@@ -1,11 +1,11 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { CheckCircle, MagnifyingGlass, XCircle } from 'phosphor-react';
-import { PokemonAcademyContext, TrainerType } from '../../context/PokemonAcademyContext'
+import { PokemonAcademyContext } from '../../context/PokemonAcademyContext'
 import { useForm } from 'react-hook-form';
 import { useContext, useRef } from 'react';
 import { PokemonCard } from '../PokemonsCard';
 import { v4 as uuidv4 } from 'uuid'
-import { ShowPokemonSearch } from './ShowPokemonSearch';
+import { TrainerType } from '../../types/types';
 
 interface UpdateTrainerProps {
     trainerToUpdate: TrainerType
@@ -13,10 +13,10 @@ interface UpdateTrainerProps {
 
 export function UpdateTrainerModal({ trainerToUpdate }: UpdateTrainerProps) {
 
-    const { updateTrainer, fetchPokemonByName, trainers, addPokemonToTrainer, currentPokemons, } = useContext(PokemonAcademyContext)
+    const { updateTrainer, fetchPokemonByName, addPokemonToTrainer, currentPokemons, } = useContext(PokemonAcademyContext)
 
     const { register, handleSubmit, reset } = useForm<TrainerType>()
-    const refNamePokemon = useRef(null)
+    const refNamePokemon = useRef<HTMLInputElement | null>(null)
 
     function handleUpdateTrainer(newData: TrainerType) {
         console.log('entro');
@@ -24,22 +24,20 @@ export function UpdateTrainerModal({ trainerToUpdate }: UpdateTrainerProps) {
         updateTrainer(trainerToUpdate, newData)
     }
 
-    const handlePokemonToTrainer = (e) => {
+    const handlePokemonToTrainer = (e: React.FormEvent<HTMLInputElement>) => {
         const pokemonObject = JSON.parse(e.target._wrapperState.initialValue)
         addPokemonToTrainer(trainerToUpdate, pokemonObject)
     }
 
     const handleSearch = () => {
-        if (trainerToUpdate.pokemons?.length > 5) {
+        if (trainerToUpdate?.pokemons?.length != undefined && trainerToUpdate.pokemons.length > 5) {
             alert('Você já possui 6 pokemons')
         }
         else {
-            const query = refNamePokemon?.current.value;
-            fetchPokemonByName(query);
+            const query = refNamePokemon.current?.value;
+            query != undefined && fetchPokemonByName(query);
         }
-
     }
-
     return (
         <Dialog.Portal className="align-middle">
             <Dialog.Overlay className="fixed inset-0 bg-white/40" />
@@ -84,10 +82,9 @@ export function UpdateTrainerModal({ trainerToUpdate }: UpdateTrainerProps) {
                             type="text"
                             placeholder="Pesquise um Pokemon para adicionar ao Treinador"
                             ref={refNamePokemon}
-                            // required
                             defaultValue={''}
                         />
-                        <button type="button" onClick={(refNamePokemon) => handleSearch(refNamePokemon)} className="flex items-center border-2 border-green-900 p-2 rounded-lg 
+                        <button type="button" onClick={() => handleSearch()} className="flex items-center border-2 border-green-900 p-2 rounded-lg 
                         space-x-1  hover:bg-green-800 hover:text-gray-100 text-gray-200 duration-150">
                             <MagnifyingGlass size={20} />
                             <span>
@@ -109,10 +106,6 @@ export function UpdateTrainerModal({ trainerToUpdate }: UpdateTrainerProps) {
                                     // defaultValue={JSON.stringify(pokemon) || undefined}
                                     value={JSON.stringify(currentPokemons[0])}
                                     checked={currentPokemons[0].isChecked || undefined}
-                                    // onClick={(e) => setTimeout(() => {
-                                    //     fetchPokemons(currentPage)
-                                    // }, 1000)}
-                                    // disabled={pokemon.isChecked}
                                     onChange={(e) => {
                                         handlePokemonToTrainer(e)
                                     }}
@@ -152,23 +145,10 @@ export function UpdateTrainerModal({ trainerToUpdate }: UpdateTrainerProps) {
                                             {currentPokemons[0].isChecked && <CheckCircle weight={'bold'} size={42} />}
                                         </div>
                                     </div>
-
-                                    {/* </div> */}
                                 </label>
                             </li>
                         </div>
                     }
-
-                    {/* {currentPokemons.length == 1 &&
-                        <ShowPokemonSearch
-                            age={trainerToUpdate.age}
-                            cityOfBirth={trainerToUpdate.cityOfBirth}
-                            id={trainerToUpdate.id}
-                            name={trainerToUpdate.name}
-                            pokemons={trainerToUpdate.pokemons}
-                        />
-                    } */}
-
                     <h3 className="m-1 text-lg font-medium text-white">Pokemons do treinador:</h3>
                     <ul className="grid w-full gap-2 md:grid-cols-3 ">
                         {trainerToUpdate.pokemons?.map((pokemon) => {
@@ -178,25 +158,18 @@ export function UpdateTrainerModal({ trainerToUpdate }: UpdateTrainerProps) {
                                     ability={pokemon.ability}
                                     cover={pokemon.cover}
                                     name={pokemon.name}
-                                    types={pokemon.types} />
+                                    types={pokemon.types}
+                                />
                             )
                         })}
                     </ul>
                     <div className=' flex justify-between'>
                         <button type="submit" className=' mt-4 text-gray-100 bg-green-800 rounded-lg w-32 p-2'>
-                            {/* disabled={isSubmitting} */}
                             Alterar dados
                         </button>
-
                         <Dialog.Close className=' mt-4 text-gray-100 bg-blue-800 rounded-lg w-32 p-2'>
                             Voltar
                         </Dialog.Close>
-                        {/* <Dialog.Root>
-                            <Dialog.Trigger className="mt-4 text-gray-100 bg-green-800 rounded-lg p-2">
-                                Vincular Pokemons
-                            </Dialog.Trigger>
-                            <NewPokemon />
-                        </Dialog.Root> */}
                     </div>
                 </form>
             </Dialog.Content>

@@ -1,29 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Dialog from '@radix-ui/react-dialog';
 import { XCircle } from 'phosphor-react';
 import { LinkPokemonToTrainer } from './LinkPokemonToTrainerModal';
-import { PokemonAcademyContext, TrainerType } from '../../context/PokemonAcademyContext'
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from "yup";
-import { useContext, useEffect, useRef, useState } from 'react';
+import { PokemonAcademyContext } from '../../context/PokemonAcademyContext'
+import { MutableRefObject, useContext, useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid'
-import PokemonsViewMobile from './ModalMobile/MobileScrollLinkPokemonToTrainer';
-import { MobileLinkPokemonToTrainer } from './ModalMobile/MobileLinkPokemonToTrainer';
-
-
-// const newTrainerFormSchema = {
-//     name: yup.string(),
-//     age: yup.number(),
-//     citeOfBirth: yup.string(),
-// }
 
 export function NewTrainerModal() {
-    const { createNameTrainer, createAgeTrainer, createCityOfBithTrainer, currentTrainer, createTrainer, isMobile } = useContext(PokemonAcademyContext)
+    const { createNameTrainer, createAgeTrainer, createCityOfBithTrainer, currentTrainer, createTrainer } = useContext(PokemonAcademyContext)
     const [isDisabled, setIsDisabled] = useState(true)
-    const refNameTrainer = useRef(null)
-    const refAgeTrainer = useRef(null)
-    const refCityOfBirthTrainer = useRef(null)
+    const refNameTrainer = useRef() as MutableRefObject<HTMLInputElement>;
+    const refAgeTrainer = useRef() as MutableRefObject<HTMLInputElement>;
+    const refCityOfBirthTrainer = useRef() as MutableRefObject<HTMLInputElement>;
 
     useEffect(() => {
         const fieldsIsEmpty = Object.values(currentTrainer).length < 4 ? true : false || Object.values(currentTrainer).includes("")
@@ -32,11 +19,7 @@ export function NewTrainerModal() {
     },
         [currentTrainer]
     )
-
-    // console.log(isMobile);
-
-
-    function onSubmitForm(e) {
+    function onSubmitForm() {
         if (Object.values(currentTrainer).length < 4 ? true : false || Object.values(currentTrainer).includes("")) {
             alert('Preencha todos os campos')
         }
@@ -48,16 +31,15 @@ export function NewTrainerModal() {
             refNameTrainer.current.value = ''
             refAgeTrainer.current.value = ''
             refCityOfBirthTrainer.current.value = ''
-
         }
     }
-    function handleNameOfTrainer(e) {
+    function handleNameOfTrainer(e: React.ChangeEvent<HTMLInputElement>) {
         createNameTrainer(e.target.value)
     }
-    function handleAgeOfTrainer(e) {
-        createAgeTrainer(e.target.value)
+    function handleAgeOfTrainer(e: React.ChangeEvent<HTMLInputElement>) {
+        createAgeTrainer(Number(e.target.value))
     }
-    function handleCityOfBithTrainer(e) {
+    function handleCityOfBithTrainer(e: React.ChangeEvent<HTMLInputElement>) {
         createCityOfBithTrainer(e.target.value)
     }
     return (
@@ -115,7 +97,7 @@ export function NewTrainerModal() {
                             {/* <LinkPokemonToTrainer /> */}
 
                         </Dialog.Root>
-                        <button type="button" onClick={(e) => onSubmitForm(e)} disabled={isDisabled} className='disabled:cursor-not-allowed disabled:opacity-60 mt-4 text-gray-100 bg-green-800 rounded-lg w-24 p-2'>
+                        <button type="button" onClick={() => onSubmitForm()} disabled={isDisabled} className='disabled:cursor-not-allowed disabled:opacity-60 mt-4 text-gray-100 bg-green-800 rounded-lg w-24 p-2'>
                             {/* disabled={isSubmitting} */}
                             Cadastrar
                         </button>

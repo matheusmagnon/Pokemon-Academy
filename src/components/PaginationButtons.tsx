@@ -3,7 +3,6 @@ import { useContext, useEffect } from "react";
 import ReactPaginate from "react-paginate"
 import { PokemonAcademyContext } from "../context/PokemonAcademyContext";
 
-
 export function PaginationButtons() {
 
     const { setCurrentPage, setCPage, cPage, totalPages } = useContext(PokemonAcademyContext)
@@ -14,18 +13,17 @@ export function PaginationButtons() {
 
     const handlePageClick = (selected: PropsHandlePageClick) => {
         setCPage(selected.selected + 1)
-        console.log("current click page", selected.selected + 1);
     }
+
     useEffect(() => {
         setCurrentPage(cPage)
     }, [cPage, setCurrentPage])
-    // console.log("current page", currentPage);
 
     return (
         <div className="text-gray-300 text-xs md:text-base">
             <ReactPaginate
                 breakLabel={
-                    <span className="mr-2">...</span>
+                    <span className="mx-2">...</span>
                 }
                 nextLabel={
                     <span className=" flex items-center 
@@ -46,9 +44,7 @@ export function PaginationButtons() {
                 hover:bg-slate-600 w-8 h-5 flex items-center 
                 justify-center rounded-md'
                 activeClassName="bg-slate-400 text-slate-700"
-            // renderOnZeroPageCount={null}
             />
-
         </div>
     )
 }

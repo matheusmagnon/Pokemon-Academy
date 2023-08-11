@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { MagnifyingGlass, NotePencil, Trash } from "phosphor-react"
 import { useContext } from "react"
-import { PokemonAcademyContext, TrainerType } from "./context/PokemonAcademyContext"
+import { PokemonAcademyContext } from "./context/PokemonAcademyContext"
 import * as Dialog from '@radix-ui/react-dialog';
 // import { Buttom } from "./components/Buttom";
 import { NewTrainerModal } from "./components/Modal/NewTrainerModal";
@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { UpdateTrainerModal } from "./components/Modal/UpdateTrainerModal";
 
 import logo from './assets/logo.png'
-import { MobileUpdateTrainer } from "./components/Modal/ModalMobile/MobileUpdateTrainerModal";
+import { TrainerType } from "./types/types";
 
 // import { v4 as uuidv4 } from 'uuid'
 
@@ -54,7 +54,7 @@ function App() {
       </header>
       <form onSubmit={handleSubmit(handleSearchTrainer)} className=" flex flex-row items-center 
       justify-between w-full pt-4 space-x-4">
-        <input type="text" placeholder="Busque por treinadores" className="h-10 bg-gray-950 w-full 
+        <input type="text" placeholder="Busque por treinadores" className="h-10 bg-slate-800 border-2 border-blue-950 w-full 
         px-2 rounded-lg text-xs" {...register('name')} required />
         <button type="submit" className="flex border-2 border-green-900 lg:p-2 lg:text-base text-xs p-1 rounded-lg md:space-x-1 space-x-0 
         w-56 hover:bg-green-800 hover:text-gray-100 text-green-600 duration-150">

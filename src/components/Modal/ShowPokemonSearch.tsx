@@ -12,13 +12,13 @@ import { v4 as uuidv4 } from 'uuid'
 export function ShowPokemonSearch(trainerToUpdate: TrainerType) {
     console.log(trainerToUpdate);
 
-    const { pokemonSearch, currentPokemons, fetchPokemonsByPage, currentPage, updateTrainer } = useContext(PokemonAcademyContext)
-    const [isDisabled, setIsDisabled] = useState(true)
+    const { currentPokemons, fetchPokemonsByPage, currentPage, updateTrainer } = useContext(PokemonAcademyContext)
+    // const [isDisabled, setIsDisabled] = useState(true)
 
     function handleUpdateTrainer(trainerToUpdate: TrainerType) {
         // console.log("trainer", trainerToUpdate);
         // console.log("pokemon pesquisa", pokemonSearch);
-        const newTrainer = { ...trainerToUpdate, pokemons: [...trainerToUpdate.pokemons, pokemonSearch] }
+        const newTrainer = { ...trainerToUpdate, pokemons: [...trainerToUpdate.pokemons] }
         updateTrainer(trainerToUpdate, newTrainer)
     }
 
