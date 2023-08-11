@@ -14,7 +14,12 @@ import { MobileUpdateTrainer } from "./components/Modal/ModalMobile/MobileUpdate
 // import { v4 as uuidv4 } from 'uuid'
 
 function App() {
-  const { trainers, deleteTrainer, searchTrainerByName, trainerToSearch, isMobile, resetSearchTrainer } = useContext(PokemonAcademyContext)
+  const { trainers,
+    deleteTrainer,
+    searchTrainerByName,
+    trainerToSearch,
+    // isMobile,
+    resetSearchTrainer } = useContext(PokemonAcademyContext)
 
   let viewTable
 
@@ -87,7 +92,8 @@ function App() {
               <th scope="col" className="lg:px-6 px-2  py-3">
                 Cidade de nascimento
               </th>
-              <th scope="col" className="lg:px-6 px-2  py-3">
+              <th scope="col" className="lg:px-4 px-2  py-3">
+                Ações
               </th>
             </tr>
           </thead>
@@ -95,29 +101,30 @@ function App() {
             {viewTable?.map((trainer) => {
               return (
                 <tr key={trainer.id} className=" border-b bg-gray-800 border-gray-700 hover:bg-gray-600 cursor-pointer">
-                  <th scope="row" className="lg:px-6 px-2  py-2 font-medium  whitespace-nowrap text-white">
+                  <td scope="row" className="lg:px-6 px-2  py-2 font-medium  whitespace-nowrap text-white">
                     {trainer.name}
-                  </th>
+                  </td>
                   <td className="px-6 py-2">
                     {trainer.age}
                   </td>
                   <td className="px-6 py-2">
                     {trainer.cityOfBirth}
                   </td>
+                  <Dialog.Root>
 
-                  <td className="flex lg:space-x-2 space-x-6 items-center py-2">
-                    <a href="#" className="font-medium"><span className=" text-blue-600 hover:underline">Detalhes</span></a>
+                    <td className="flex lg:space-x-2 items-center px-2  py-3">
+                      {/* <a href="#" className="font-medium"><span className=" text-blue-600 hover:underline">Detalhes</span></a> */}
 
-                    <Dialog.Root>
                       <Dialog.Trigger  >
                         <NotePencil className="text-blue-600 hover:text-blue-950" size={20} />
                       </Dialog.Trigger>
-                      {!isMobile && <UpdateTrainerModal trainerToUpdate={trainer} />}
-                      {isMobile && <MobileUpdateTrainer trainerToUpdate={trainer} />}
-                    </Dialog.Root>
 
-                    <Trash onClick={() => { deleteTrainer(trainer) }} className="text-blue-600 hover:text-red-900" size={20} />
-                  </td>
+
+                      <Trash onClick={() => { deleteTrainer(trainer) }} className="text-blue-600 hover:text-red-900" size={20} />
+                    </td>
+                    <UpdateTrainerModal trainerToUpdate={trainer} />
+                    {/* {isMobile && <MobileUpdateTrainer trainerToUpdate={trainer} />} */}
+                  </Dialog.Root>
                 </tr>
               )
             })}

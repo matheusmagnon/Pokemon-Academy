@@ -8,14 +8,14 @@ import { PaginationButtons } from '../PaginationButtons';
 import { v4 as uuidv4 } from 'uuid'
 
 export function LinkPokemonToTrainer() {
-    const { currentPokemons, fetchPokemonByName, addPokemonToTrainer, fetchPokemonsByPage, currentPage
+    const { currentPokemons, fetchPokemonByName, addPokemonToTrainerCurrentTrainer, fetchPokemonsByPage, currentPage
     } = useContext(PokemonAcademyContext)
 
     const refNamePokemon = useRef(null)
 
     const handlePokemonToTrainer = (e: EventTarget & HTMLInputElement) => {
         const pokemonObject = JSON.parse(e.target._wrapperState.initialValue)
-        addPokemonToTrainer(pokemonObject)
+        addPokemonToTrainerCurrentTrainer(pokemonObject)
     }
 
     interface handleSearchProps {
@@ -196,6 +196,6 @@ export function LinkPokemonToTrainer() {
                 </form>
             </Dialog.Content>
         </Dialog.Portal >
-        ///* </Dialog.Root> */ }
+        /* </Dialog.Root> */
     )
 }

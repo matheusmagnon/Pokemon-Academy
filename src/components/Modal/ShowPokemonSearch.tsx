@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid'
 export function ShowPokemonSearch(trainerToUpdate: TrainerType) {
     console.log(trainerToUpdate);
 
-    const { pokemonSearch, initialSearchPokemon, setPokemonSearch, resetPokemonSearch, updateTrainer } = useContext(PokemonAcademyContext)
+    const { pokemonSearch, currentPokemons, fetchPokemonsByPage, currentPage, updateTrainer } = useContext(PokemonAcademyContext)
     const [isDisabled, setIsDisabled] = useState(true)
 
     function handleUpdateTrainer(trainerToUpdate: TrainerType) {
@@ -22,7 +22,9 @@ export function ShowPokemonSearch(trainerToUpdate: TrainerType) {
         updateTrainer(trainerToUpdate, newTrainer)
     }
 
-    const handleResetPokemonSearch = () => resetPokemonSearch()
+    const handleResetFetch = () => {
+        fetchPokemonsByPage(currentPage)
+    }
 
     return (
         <Dialog.Portal className="align-middle">
@@ -34,16 +36,16 @@ export function ShowPokemonSearch(trainerToUpdate: TrainerType) {
                         <XCircle size={28} className='text-gray-100' />
                     </Dialog.Close>
                 </div>
-                <div className='flex justify-center'>
-                    <PokemonCard
-                        key={uuidv4()}
-                        ability={pokemonSearch?.ability}
-                        cover={pokemonSearch?.cover}
-                        name={pokemonSearch?.name}
-                        types={pokemonSearch?.types}
-                    />
-
-                </div>
+                {currentPokemons.length == 1 &&
+                    <div className='flex justify-center'>
+                        <PokemonCard
+                            key={uuidv4()}
+                            ability={currentPokemons[0]?.ability}
+                            cover={currentPokemons[0]?.cover}
+                            name={currentPokemons[0]?.name}
+                            types={currentPokemons[0]?.types}
+                        />
+                    </div>}
 
                 <div className=' flex justify-between'>
                     <Dialog.Root>
@@ -53,7 +55,7 @@ export function ShowPokemonSearch(trainerToUpdate: TrainerType) {
                         </button>
                         {/* <LinkPokemonToTrainer /> */}
                     </Dialog.Root>
-                    <button type="button" onClick={() => handleResetPokemonSearch()} className='disabled:cursor-not-allowed disabled:opacity-60 mt-4 text-gray-100 bg-green-800 rounded-lg w-24 p-2'>
+                    <button type="button" onClick={() => handleResetFetch()} className='disabled:cursor-not-allowed disabled:opacity-60 mt-4 text-gray-100 bg-green-800 rounded-lg w-24 p-2'>
                         Voltar
                     </button>
                 </div>

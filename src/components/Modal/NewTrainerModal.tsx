@@ -33,7 +33,7 @@ export function NewTrainerModal() {
         [currentTrainer]
     )
 
-    console.log(isMobile);
+    // console.log(isMobile);
 
 
     function onSubmitForm(e) {
@@ -48,6 +48,7 @@ export function NewTrainerModal() {
             refNameTrainer.current.value = ''
             refAgeTrainer.current.value = ''
             refCityOfBirthTrainer.current.value = ''
+
         }
     }
     function handleNameOfTrainer(e) {
@@ -105,8 +106,8 @@ export function NewTrainerModal() {
                             <Dialog.Trigger className="mt-4 text-gray-100 bg-yellow-700 rounded-lg p-2">
                                 Vincular Pokemons
                             </Dialog.Trigger>
-                            {isMobile && <MobileLinkPokemonToTrainer />}
-                            {!isMobile && <LinkPokemonToTrainer />}
+                            {/* {isMobile && <MobileLinkPokemonToTrainer />} */}
+                            <LinkPokemonToTrainer />
                             {/* <PokemonsViewMobile /> */}
                             {/* {isMobile && <ModalTest />} */}
                             {/* {!isMobile && <LinkPokemonToTrainer />} */}

@@ -1,11 +1,11 @@
 import { Trash } from "phosphor-react";
-import { PokemonAcademyContext, PokemonType } from "../context/PokemonAcademyContext";
+import { PokemonAcademyContext, PokemonType, } from "../context/PokemonAcademyContext";
 
 import { v4 as uuidv4 } from 'uuid'
 import { useContext } from "react";
 
 export function PokemonCard(pokemon: PokemonType, icon: string) {
-    const { deletePokemonOfTrainer } = useContext(PokemonAcademyContext)
+    const { deletePokemonOfTrainer, currentPokemons, trainers } = useContext(PokemonAcademyContext)
     console.log(icon);
     //add icon lixo
     return (
@@ -18,6 +18,7 @@ export function PokemonCard(pokemon: PokemonType, icon: string) {
                 id={pokemon.id?.toString()}
                 value={JSON.stringify(pokemon) || undefined}
                 checked={pokemon.isChecked || false}
+                onChange={() => { }}
             />
             <label htmlFor={pokemon.id?.toString()} className="w-56 flex justify-center p-2 cursor-pointer peer-disabled:cursor-not-allowed border-2 rounded-lg  
          hover:text-gray-300 border-gray-700 peer-checked:border-green-900 peer-checked:bg-teal-950 
@@ -52,7 +53,11 @@ export function PokemonCard(pokemon: PokemonType, icon: string) {
 
                         </div>
                         <div>
-                            <Trash className="hover:text-red-800" size={32} onClick={() => deletePokemonOfTrainer(pokemon)} />
+                            {/* {(currentPokemons.length < 1 && trainers.length > 0) && */}
+                            < Trash
+                                className="hover:text-red-800" size={32} onClick={() => deletePokemonOfTrainer(pokemon)}
+                            />
+                            {/* // } */}
                         </div>
                     </div>
                 </div>

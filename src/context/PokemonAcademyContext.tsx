@@ -42,7 +42,7 @@ interface PokemonAcademyContextType {
     setState: Dispatch<SetStateAction<number>>;
     state: number;
     fetchPokemonsByPage: (currentPage: number) => Promise<void>;
-    addPokemonToTrainer: (pokemon: PokemonType) => void;
+    addPokemonToTrainerCurrentTrainer: (pokemon: PokemonType) => void;
     currentTrainer: TrainerType;
     createAgeTrainer: (age: TrainerType) => void
     createCityOfBithTrainer: (city: TrainerType) => void
@@ -52,8 +52,10 @@ interface PokemonAcademyContextType {
     fetchPokemonByName: (name: string) => void
     pokemonSearch: PokemonType;
     resetPokemonSearch: () => void
-    isMobile: boolean;
+    // isMobile: boolean;
     resetSearchTrainer: () => void;
+    addPokemonToTrainer: (trainerToUpdate: TrainerType, pokemon: PokemonType) => void;
+    // viewTable: TrainerType[];
 
 }
 
@@ -75,7 +77,8 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
     const [totalPages, setTotalPages] = useState(0);
     const [state, setState] = useState(0);
     const [pokemonSearch, setPokemonSearch] = useState<PokemonType>();
-    const [isMobile, setIsMobile] = useState<boolean>(false);
+    // const [isMobile, setIsMobile] = useState<boolean>(false);
+    // const [viewTable, setViewTable] = useState<TrainerType[]>()
     const initialSearchPokemon = {
         id: 0,
         name: "",
@@ -85,10 +88,10 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
         isChecked: false,
     }
 
-    useEffect(() => {
-        const resolution = window.innerWidth;
-        setIsMobile(resolution >= 290 && resolution <= 480)
-    }, [])
+    // useEffect(() => {
+    //     const resolution = window.innerWidth;
+    //     setIsMobile(resolution >= 290 && resolution <= 480)
+    // }, [])
 
     const fetchPokemonsByPage = async (currentPage?: number) => {
         const limitPerPage = 6;
@@ -117,7 +120,6 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
         });
     };
 
-
     const fetchPokemonByName = async (nameOfPokemon: string) => {
         try {
             const pokemonSearch = await (fetch(`https://pokeapi.co/api/v2/pokemon/${nameOfPokemon}`)
@@ -143,16 +145,19 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
         }
     };
 
+    //set page
     useEffect(() => {
         fetchPokemonsByPage(cPage);
     }, [cPage, currentPage]);
 
+    //set fetch page
     useEffect(() => {
         if (currentPokemons.length > 1) {
             fetchPokemonsByPage(currentPage);
         }
         if (currentPokemons.length == 1) {
-            fetchPokemonByName(pokemonSearch?.name);
+
+            fetchPokemonByName(currentPokemons[0].name);
         }
 
     }, [currentTrainer]);
@@ -162,8 +167,10 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
         setTrainers([...trainers, currentTrainer]);
         setPokemonsOfTrainer([]);
         setCurrentTrainer({});
-        fetchPokemonsByPage(currentPage);
         resetSearchTrainer()
+        setTrainerToSearch([])
+        setCurrentPage(1)
+        fetchPokemonsByPage(1)
     }
 
     function createNameTrainer(name: string) {
@@ -177,18 +184,18 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
         setCurrentTrainer({ ...currentTrainer, cityOfBirth: city });
     }
 
-    //checkbox não est
-    function addPokemonToTrainer(pokemon: PokemonType) {
+    function addPokemonToTrainerCurrentTrainer(pokemon: PokemonType) {
+
         const newPokemon: PokemonType = {
             ability: pokemon.ability,
             cover: pokemon.cover,
             id: pokemon.id,
             name: pokemon.name,
             types: pokemon.types,
-            // isChecked: true
         };
-
+        //PokemonsOfTrainer is all checked pokemons
         if (pokemonsOfTrainer.length < 6) {
+
             if (pokemonsOfTrainer?.length == 0) {
                 setPokemonsOfTrainer([...pokemonsOfTrainer, newPokemon]);
             }
@@ -219,6 +226,55 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
             );
         }
     }
+
+    //return new array of trainer's pokemons
+    function addPokemonToTrainer(trainer: TrainerType, pokemon: PokemonType) {
+        const newPokemon: PokemonType = {
+            ability: pokemon.ability,
+            cover: pokemon.cover,
+            id: pokemon.id,
+            name: pokemon.name,
+            types: pokemon.types,
+        };
+
+        const newPokemonsOfTrainer = () => {
+            if (trainer.pokemons.length < 6) {
+
+                if (trainer.pokemons?.length == 0) {
+                    return [...trainer.pokemons, newPokemon]
+                }
+
+                //Se já existir valor percorre o array para verificar se o valor ja existe
+                if (trainer.pokemons?.length > 0) {
+                    if (!trainer.pokemons.map(pokemonOftrainer => pokemonOftrainer.id).includes(newPokemon.id)) {
+                        return [...trainer.pokemons, newPokemon]
+                        // setPokemonSearch(undefined);
+                    }
+                    else {
+                        return [trainer?.pokemons.filter(
+                            (pokemonOftrainer) => pokemonOftrainer.id !== newPokemon.id)]
+
+                    }
+                }
+            } else {
+                if (!trainer.pokemons.map(pokemonOftrainer => pokemonOftrainer.id).includes(newPokemon.id)) {
+                    alert('Você não pode ter mais que tem 6 pokemons');
+                }
+
+                return [
+                    trainer.pokemons.filter(
+                        (pokemonOftrainer) => pokemonOftrainer.id !== newPokemon.id,
+                    ),
+                ]
+            }
+        }
+        const newPokemons = newPokemonsOfTrainer()
+        const newTrainer = { ...trainer, pokemons: newPokemons }
+        updateTrainer(trainer, newTrainer)
+        fetchPokemonsByPage(1)
+
+    }
+
     useEffect(() => {
         setCurrentTrainer({
             ...currentTrainer,
@@ -265,12 +321,12 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
                     newData.cityOfBirth = trainer.cityOfBirth;
                 }
                 if (newData.pokemons?.length > 0) {
-                    if (!trainerToUpdate.pokemons?.map(pokemonOftrainer => pokemonOftrainer.id).includes(pokemonSearch.id)) {
+                    if (!trainerToUpdate.pokemons?.map(pokemonOftrainer => pokemonOftrainer.id).includes(currentPokemons[0].id)) {
                         return {
                             ...trainerToUpdate,
                             pokemons:
                                 [...trainerToUpdate?.pokemons
-                                    , pokemonSearch]
+                                    , currentPokemons[0]]
                         };
                     }
                     alert("Já existe pokemon com esse cadastro!")
@@ -291,7 +347,7 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
     };
 
     const resetPokemonSearch = () => {
-        console.log('reset');
+        // console.log('reset');
 
         setPokemonSearch(initialSearchPokemon)
     }
@@ -301,6 +357,7 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
     return (
         <PokemonAcademyContext.Provider value={{
             addPokemonToTrainer,
+            addPokemonToTrainerCurrentTrainer,
             fetchPokemonsByPage,
             state,
             setState,
@@ -328,7 +385,7 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
             searchTrainerByName,
             trainerToSearch,
             resetSearchTrainer,
-            isMobile
+            // isMobile
         }}>
             {children}
         </PokemonAcademyContext.Provider>
