@@ -1,8 +1,8 @@
 import { Trash } from "phosphor-react";
-import { PokemonAcademyContext, } from "../context/PokemonAcademyContext";
+import { PokemonAcademyContext, } from "../../../context/PokemonAcademyContext";
 import { v4 as uuidv4 } from 'uuid'
 import { useContext } from "react";
-import { PokemonType } from "../types/types";
+import { PokemonType } from "../../../types/types";
 
 export function PokemonCard(pokemon: PokemonType) {
     const { deletePokemonOfTrainer } = useContext(PokemonAcademyContext)

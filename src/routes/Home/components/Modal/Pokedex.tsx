@@ -1,16 +1,16 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { CheckCircle, MagnifyingGlass, XCircle } from 'phosphor-react';
 import { useContext, useRef } from 'react';
-import { PokemonAcademyContext } from '../../context/PokemonAcademyContext';
+import { PokemonAcademyContext } from '../../../../context/PokemonAcademyContext';
 
 import { PaginationButtons } from '../PaginationButtons';
 
-import pokemonTitle from '../../assets/pokemonImageLinkTrainer.png'
+import pokemonTitle from '../../../../assets/pokemonImageLinkTrainer.png'
 
 import { v4 as uuidv4 } from 'uuid'
-import { HTMLElementEvent } from '../../types/types';
+import { HTMLElementEvent } from '../../../../types/types';
 
-export function LinkPokemonToTrainer() {
+export function Pokedex() {
     const { currentPokemons, fetchPokemonByName, addPokemonToTrainerCurrentTrainer, fetchPokemonsByPage, currentPage
     } = useContext(PokemonAcademyContext)
 
@@ -81,10 +81,6 @@ export function LinkPokemonToTrainer() {
                                                 // defaultValue={JSON.stringify(pokemon) || undefined}
                                                 value={JSON.stringify(pokemon)}
                                                 checked={pokemon.isChecked || undefined}
-                                                // onClick={(e) => setTimeout(() => {
-                                                //     fetchPokemons(currentPage)
-                                                // }, 1000)}
-                                                // disabled={pokemon.isChecked}
                                                 onChange={(e) => {
                                                     handlePokemonToTrainer(e)
                                                 }}
@@ -107,7 +103,7 @@ export function LinkPokemonToTrainer() {
                                                             )
                                                         })}
                                                     </div>
-                                                    <div className="flex flex-row justify-end items-end text-sm ">
+                                                    <div className="flex flex-row  items-end text-sm ">
                                                         <div className='flex'>
                                                             <div className="flex flex-wrap items-baseline">
                                                                 <span>Habilidades:</span>
@@ -124,14 +120,12 @@ export function LinkPokemonToTrainer() {
                                                         {pokemon.isChecked && <CheckCircle weight={'bold'} size={42} />}
                                                     </div>
                                                 </div>
-
-                                                {/* </div> */}
                                             </label>
                                         </li>
-
                                     )
                                 })}
-                            </ul>}
+                            </ul>
+                        }
                         {currentPokemons.length > 1 &&
                             <ul className="grid w-fit gap-2 lg:grid-cols-3 sm:grid-cols-2  self-center ">
                                 {currentPokemons?.map((pokemon) => {

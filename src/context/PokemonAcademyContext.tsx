@@ -212,6 +212,8 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
     };
 
     const deleteTrainer = (trainerToDelete: TrainerType) => {
+        console.log('tt', trainerToDelete);
+
         setTrainers(
             trainers.filter(
                 (trainer) => trainer.id !== trainerToDelete.id,

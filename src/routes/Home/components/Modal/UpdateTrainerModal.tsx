@@ -1,11 +1,11 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { CheckCircle, MagnifyingGlass, XCircle } from 'phosphor-react';
-import { PokemonAcademyContext } from '../../context/PokemonAcademyContext'
+import { PokemonAcademyContext } from '../../../../context/PokemonAcademyContext'
 import { useForm } from 'react-hook-form';
 import { useContext, useRef } from 'react';
 import { PokemonCard } from '../PokemonsCard';
 import { v4 as uuidv4 } from 'uuid'
-import { TrainerType } from '../../types/types';
+import { TrainerType } from '../../../../types/types';
 
 interface UpdateTrainerProps {
     trainerToUpdate: TrainerType
@@ -128,7 +128,7 @@ export function UpdateTrainerModal({ trainerToUpdate }: UpdateTrainerProps) {
                                                 )
                                             })}
                                         </div>
-                                        <div className="flex flex-row justify-end items-end text-sm ">
+                                        <div className="flex flex-row items-end text-sm ">
                                             <div className='flex'>
                                                 <div className="flex flex-wrap items-baseline">
                                                     <span>Habilidades:</span>

@@ -1,9 +1,10 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { XCircle } from 'phosphor-react';
-import { LinkPokemonToTrainer } from './LinkPokemonToTrainerModal';
-import { PokemonAcademyContext } from '../../context/PokemonAcademyContext'
+import { Pokedex } from './Pokedex';
+import { PokemonAcademyContext } from '../../../../context/PokemonAcademyContext'
 import { MutableRefObject, useContext, useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid'
+// import pokemonButton from '../../assets/'
 
 export function NewTrainerModal() {
     const { createNameTrainer, createAgeTrainer, createCityOfBithTrainer, currentTrainer, createTrainer } = useContext(PokemonAcademyContext)
@@ -86,15 +87,10 @@ export function NewTrainerModal() {
                     <div className=' flex justify-between'>
                         <Dialog.Root>
                             <Dialog.Trigger className="mt-4 text-gray-100 bg-yellow-700 rounded-lg p-2">
-                                Vincular Pokemons
+                                Abrir Pokédex
                             </Dialog.Trigger>
-                            {/* {isMobile && <MobileLinkPokemonToTrainer />} */}
-                            <LinkPokemonToTrainer />
-                            {/* <PokemonsViewMobile /> */}
-                            {/* {isMobile && <ModalTest />} */}
-                            {/* {!isMobile && <LinkPokemonToTrainer />} */}
+                            <Pokedex />
 
-                            {/* <LinkPokemonToTrainer /> */}
 
                         </Dialog.Root>
                         <button type="button" onClick={() => onSubmitForm()} disabled={isDisabled} className='disabled:cursor-not-allowed disabled:opacity-60 mt-4 text-gray-100 bg-green-800 rounded-lg w-24 p-2'>

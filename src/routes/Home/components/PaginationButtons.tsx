@@ -1,7 +1,7 @@
 import { CaretLeft, CaretRight } from "phosphor-react"
 import { useContext, useEffect } from "react";
 import ReactPaginate from "react-paginate"
-import { PokemonAcademyContext } from "../context/PokemonAcademyContext";
+import { PokemonAcademyContext } from "../../../context/PokemonAcademyContext";
 
 export function PaginationButtons() {
 
