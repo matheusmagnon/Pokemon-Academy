@@ -39,13 +39,13 @@ Desafio de React do ignite (Rocketseat)
 1. Clone o repositório
 
 ```bash
-git clone https://github.com/Magon0/Financial-Management
+git clone https://github.com/matheusmagnon/Pokemon-Academy.git
 ```
 
 2. Acesse a pasta do projeto
 
 ```bash
-cd Financial-Management
+cd Pokemon-Academy
 ```
 
 3. Instale as dependências necessárias
@@ -58,10 +58,4 @@ npm install
 
 ```bash
 npm run dev
-```
-
-5. Execute o script para subir json-server
-
-```bash
-npm run dev:server
 ```
