@@ -1,27 +1,67 @@
-# React + TypeScript + Vite
+# DT Money (Aplicação para gestão Financeira )
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Desafio de React do ignite (Rocketseat)
 
-Currently, two official plugins are available:
+## Capa
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<img src="./src/assets/Capa.JPG" /> <br/> <br/>
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Funcionalidades da aplicação
 
-- Configure the top-level `parserOptions` property like this:
+- Criar treinadores 
+- Lista de treinadores
+- Deletar treinadores
+- Pesquisar por treinadores
+- Atualizar informações de um treinador
+- Listar pokemons
+- Adicionar pokemons à um determinada treinador
+- Excluir pokemons de um treinador
+- Pesquisar por um determinado pokemon
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+
+## Tecnologias utilizadas
+
+- React
+- Typescript
+- Vite
+- Context API
+- radix-ui
+- Tailwind
+- React hook form
+- Phosphor React
+- uuid
+
+## Como executar a aplicação
+
+### Instalação
+
+1. Clone o repositório
+
+```bash
+git clone https://github.com/Magon0/Financial-Management
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+2. Acesse a pasta do projeto
+
+```bash
+cd Financial-Management
+```
+
+3. Instale as dependências necessárias
+
+```bash
+npm install
+```
+
+4. Execute o projeto Frontend
+
+```bash
+npm run dev
+```
+
+5. Execute o script para subir json-server
+
+```bash
+npm run dev:server
+```

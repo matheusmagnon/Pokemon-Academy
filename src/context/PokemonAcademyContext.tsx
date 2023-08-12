@@ -1,7 +1,6 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { createContext, useEffect, useState } from 'react';
 
-import { api } from '../lib/axios';
 import { PokemonAcademyContextType, PokemonAcademyProviderProps, PokemonType, TrainerType } from '../types/types';
 
 
