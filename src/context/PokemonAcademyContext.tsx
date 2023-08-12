@@ -1,6 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { createContext, useEffect, useState } from 'react';
 
+import { api } from '../lib/axios';
 import { PokemonAcademyContextType, PokemonAcademyProviderProps, PokemonType, TrainerType } from '../types/types';
 
 
@@ -211,8 +212,6 @@ export function PokemonAcademyProvider({ children }: PokemonAcademyProviderProps
     };
 
     const deleteTrainer = (trainerToDelete: TrainerType) => {
-        console.log('tt', trainerToDelete);
-
         setTrainers(
             trainers.filter(
                 (trainer) => trainer.id !== trainerToDelete.id,

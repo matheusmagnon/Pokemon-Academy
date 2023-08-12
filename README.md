@@ -1,6 +1,4 @@
-# DT Money (Aplicação para gestão Financeira )
-
-Desafio de React do ignite (Rocketseat)
+# Pokemon Acadey (Aplicação para gestão de uma academia Pokemon )
 
 ## Capa
 
